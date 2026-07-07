@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Guest;
 use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        Request::macro('guest', function (): Guest {
+            return $this->attributes->get('_guest');
+        });
     }
 
     /**

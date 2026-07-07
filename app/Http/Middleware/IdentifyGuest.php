@@ -32,7 +32,7 @@ class IdentifyGuest
         }
 
         // Make the guest available throughout the request
-        $request->merge(['_guest' => $guest]);
+        $request->attributes->set('_guest', $guest);
 
         $response = $next($request);
 
