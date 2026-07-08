@@ -2,16 +2,30 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[Fillable(['token', 'last_seen_at'])]
 class Guest extends Model
 {
-    protected $fillable = ['token', 'last_seen_at'];
-
-    protected function casts():array
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return ['lasts_seen_at' => 'datetime'];
+        return ['last_seen_at' => 'datetime'];
     }
 
+    /**
+     * Get the templates belonging to this guest.
+     *
+     * @return HasMany<Template, $this>
+     */
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class);
+    }
 }
