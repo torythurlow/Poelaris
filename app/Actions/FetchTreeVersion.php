@@ -22,7 +22,7 @@ class FetchTreeVersion
         $path = "trees/{$version}.json";
         $url = "https://raw.githubusercontent.com/grindinggear/skilltree-export/{$version}/data.json";
 
-        $response = Http::timeout(60)->retry(3, 2000)->get($url);
+        $response = Http::timeout(60)->retry(3, 2000, throw: false)->get($url);
 
         if ($response->failed()) {
             throw new RuntimeException(
