@@ -7,7 +7,6 @@ use App\Http\Requests\StoreTreeVersionRequest;
 use App\Models\TreeVersion;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -23,8 +22,12 @@ class TreeVersionController extends Controller
      */
     public function index(): Response
     {
+        $versions = TreeVersion::all()
+            ->sort(fn (TreeVersion $a, TreeVersion $b) => version_compare($b->version, $a->version))
+            ->values();
+
         return Inertia::render('tree-versions/Index', [
-            'versions' => TreeVersion::latest('fetched_at')->get(),
+            'versions' => $versions,
         ]);
     }
 
@@ -33,14 +36,15 @@ class TreeVersionController extends Controller
      * @param StoreTreeVersionRequest $request
      * @param FetchTreeVersion $action
      * @return RedirectResponse
-     * @throws ConnectionException
      */
     public function store(StoreTreeVersionRequest $request, FetchTreeVersion $action): RedirectResponse
     {
         try {
             $action->handle(...$request->validated());
-        } catch (RuntimeException $e) {
-            throw ValidationException::withMessages(['version' => $e->getMessage()]);
+        } catch (RuntimeException|ConnectionException $e) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => $e->getMessage()]);
+
+            return to_route('tree-versions.index');
         }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Tree version fetched.')]);
