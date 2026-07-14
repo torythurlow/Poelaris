@@ -89,6 +89,10 @@
 
     --color-poe-green: #6fae5c;
     --color-poe-green-bright: #8fcf7a;
+
+    /* Stock shadow-* utilities default to ~10% opacity, tuned for light
+       backgrounds — too faint to read against the void. Generates shadow-poe-panel. */
+    --shadow-poe-panel: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
 }
 
 /*
