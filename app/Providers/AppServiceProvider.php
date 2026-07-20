@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Guest;
+use App\Models\Template;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -30,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
         Request::macro('guest', function (): Guest {
             return $this->attributes->get('_guest');
         });
+
+        // Scope the {template} route parameter to the current guest so every
+        // controller behind it gets a 404 instead of leaking another guest's data.
+        Route::bind('template', fn (string $value): Template => request()->guest()->templates()->findOrFail($value));
     }
 
     /**
