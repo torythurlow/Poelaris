@@ -57,4 +57,12 @@ class Template extends Model
     {
         return $this->hasMany(LevelRange::class);
     }
+
+    /**
+     * Map the {range} route parameter to the levelRanges relation for scoped bindings.
+     */
+    protected function childRouteBindingRelationshipName($childType)
+    {
+        return $childType === 'range' ? 'levelRanges' : parent::childRouteBindingRelationshipName($childType);
+    }
 }
