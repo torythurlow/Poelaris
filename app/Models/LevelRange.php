@@ -80,6 +80,18 @@ class LevelRange extends Model
     }
 
     /**
+     * Map the {jewel} and {mastery} route parameters to their relations for scoped bindings.
+     */
+    protected function childRouteBindingRelationshipName($childType)
+    {
+        return match ($childType) {
+            'jewel' => 'jewelSocketAssignments',
+            'mastery' => 'masteryAllocations',
+            default => parent::childRouteBindingRelationshipName($childType),
+        };
+    }
+
+    /**
      * Scope the query to order level ranges by their sort order.
      *
      * @param  Builder<LevelRange>  $query
